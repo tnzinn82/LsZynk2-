@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>YyZynk - Baixador de videos YouTube</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0e0e0e;
+      color: #f1f1f1;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: #1a1a1a;
+      padding: 30px 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(255, 0, 100, 0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #ff0066;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input, select {
+      background: #2a2a2a;
+      color: #fff;
+    }
+
+    button {
+      background: linear-gradient(to right, #ff0066, #ff4d00);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 25px 15px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Baixador de YouTube</h1>
+    <input id="url" type="text" placeholder="Cole o link do YouTube" />
+    <select id="type">
+      <option value="video">Vídeo (MP4)</option>
+      <option value="audio">Áudio (MP3)</option>
+    </select>
+    <button onclick="baixar()">Baixar</button>
+  </div>
+
+  <script>
+    async function baixar() {
+      const url = document.getElementById('url').value;
+      const type = document.getElementById('type').value;
+
+      if (!url.trim()) return alert("Cole um link do YouTube!");
+
+      const res = await fetch('/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, type })
+      });
+
+      if (res.ok) {
+        const blob = await res.blob();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'download.' + (type === 'audio' ? 'mp3' : 'mp4');
+        a.click();
+      } else {
+        alert('Erro ao baixar. Verifique o link ou tente novamente.');
+      }
+    }
+  </script>
+</body>
+</html>
